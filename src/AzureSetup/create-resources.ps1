@@ -6,6 +6,8 @@ $nsg = $vm + "nsg"
 $image = "Win2019Datacenter"
 $size = "Standard_B2ms"
 #$spotVmMaxPricePerHr = 0.1
+$publicIP = $vm + "PublicIP"
+$dnsName = "vmteamcity001" # DNS will be vmteamcity001.northcentralus.cloudapp.azure.com"
 
 & az group create -n $rg -l northcentralus
 
@@ -38,3 +40,21 @@ $ip = curl "https://api.ipify.org?format=json" | ConvertFrom-Json | select -Expa
     --access Allow `
     --protocol Tcp `
     --description "Allow inbound RDP from my IP."
+
+& az network nsg rule create `
+    -g $rg `
+    --nsg-name $nsg `
+    -n "Allow http" `
+    --priority 100 `
+    --source-address-prefixes '*' `
+    --destination-address-prefixes '*' `
+    --destination-port-ranges 80 `
+    --access Allow `
+    --protocol Tcp `
+    --description "Allow http."
+
+& az network public-ip update `
+    -g $rg `
+    -n $publicIP `
+    --dns-name $dnsName `
+    --allocation-method Dynamic

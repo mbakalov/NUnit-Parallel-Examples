@@ -32,3 +32,6 @@ bld/
 *.nuget.targets
 
 output/
+
+# TeamCity Kotlin DSL generated output when using debugger
+.teamcity/target/
