@@ -23,7 +23,7 @@ $admin = Get-Credential -Message "Enter new VM admin user credentials"
     #--max-price $spotVmMaxPricePerHr `
     #--eviction-policy Deallocate
 
-# Remote default "RDL open to everyone rule"
+# Remove default "RDP open to everyone rule"
 & az network nsg rule delete -g $rg --nsg $nsg --name rdp
 
 # What's my public IP
