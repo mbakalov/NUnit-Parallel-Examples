@@ -55,10 +55,17 @@ object Build : BuildType({
                 path = ".teamcity/Add-SQLServer.ps1"
             }
         }
-        nunit {
-            name = "Run integration tests"
-            nunitPath = "%teamcity.tool.NUnit.Console.DEFAULT%"
-            includeTests = """src\FrameworkApp\FrameworkApp.Tests\bin\Debug\FrameworkApp.Tests.dll"""
+//        nunit {
+//            name = "Run integration tests"
+//            nunitPath = "%teamcity.tool.NUnit.Console.DEFAULT%"
+//            includeTests = """src\FrameworkApp\FrameworkApp.Tests\bin\Debug\FrameworkApp.Tests.dll"""
+//        }
+        powerShell {
+            name = "Run integrations tests (multi-process)"
+            workingDir = "src/FrameworkApp"
+            scriptMode = file {
+                path = ".teamcity/Invoke-NUnitParallel.ps1"
+            }
         }
         powerShell {
             name = "Tear down SQL Server container"
