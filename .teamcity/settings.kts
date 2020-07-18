@@ -1,7 +1,5 @@
 import jetbrains.buildServer.configs.kotlin.v2019_2.*
-import jetbrains.buildServer.configs.kotlin.v2019_2.buildSteps.DotnetMsBuildStep
-import jetbrains.buildServer.configs.kotlin.v2019_2.buildSteps.dotnetMsBuild
-import jetbrains.buildServer.configs.kotlin.v2019_2.buildSteps.nuGetInstaller
+import jetbrains.buildServer.configs.kotlin.v2019_2.buildSteps.*
 import jetbrains.buildServer.configs.kotlin.v2019_2.triggers.vcs
 
 /*
@@ -50,6 +48,23 @@ object Build : BuildType({
             version = DotnetMsBuildStep.MSBuildVersion.V16
             args = "-restore -noLogo"
             param("dotNetCoverage.dotCover.home.path", "%teamcity.tool.JetBrains.dotCover.CommandLineTools.DEFAULT%")
+        }
+        powerShell {
+            name = "Setup SQL Server in a container to run tests against"
+            scriptMode = file {
+                path = ".teamcity/Add-SQLServer.ps1"
+            }
+        }
+        nunit {
+            name = "Run integration tests"
+            nunitPath = "%teamcity.tool.NUnit.Console.DEFAULT%"
+            includeTests = """src\FrameworkApp\FrameworkApp.Tests\bin\Debug\FrameworkApp.Tests.dll"""
+        }
+        powerShell {
+            name = "Tear down SQL Server container"
+            scriptMode = file {
+                path = ".teamcity/Remove-SQLServer.ps1"
+            }
         }
     }
 
