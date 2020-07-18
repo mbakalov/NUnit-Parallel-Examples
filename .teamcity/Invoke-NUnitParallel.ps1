@@ -30,6 +30,7 @@ $block = {
     $dbName = "BlogContext$bucketId"
     $outputDir = ".\output\$bucketId"
 
+    Write-Host "DEBUG: TEAMCITY_PROCESS_FLOW_ID='$env:TEAMCITY_PROCESS_FLOW_ID'"
     & .\packages\NUnit.ConsoleRunner.3.11.1\tools\nunit3-console.exe `
         .\FrameworkApp.Tests\bin\Debug\FrameworkApp.Tests.dll `
         --testlist=$testFile --testparam:DbName=$dbName --work=$outputDir `
