@@ -17,18 +17,19 @@ for ($i = 0; $i -lt 20; $i++) {
     & docker exec tcdemo-sql-001 $sqlcmd `
         -S localhost -U sa -P "$saPassword" `
         -Q "CREATE LOGIN [testuser] WITH PASSWORD=N'testpassword', DEFAULT_DATABASE=[master], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF"
-    & docker exec tcdemo-sql-001 $sqlcmd `
-        -S localhost -U sa -P "$saPassword" `
-        -Q "ALTER SERVER ROLE [sysadmin] ADD MEMBER [testuser]"
-    
+
     if ($LASTEXITCODE -eq 0) {
-        Write-Host "testuser created!"
+        Write-Host "testuser created"
         break
     } else {
         Write-Host "Failed to create testuser, probably SQL Server hasn't started yet. Will retry in 15 seconds. Attempt $i/20"
         Start-Sleep -Seconds 15
     }
 }
+
+& docker exec tcdemo-sql-001 $sqlcmd `
+    -S localhost -U sa -P "$saPassword" `
+    -Q "ALTER SERVER ROLE [sysadmin] ADD MEMBER [testuser]"
 
 if (-not (Test-Path .\output))
 {
