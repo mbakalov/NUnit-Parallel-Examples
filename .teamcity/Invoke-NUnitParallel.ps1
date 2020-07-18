@@ -36,7 +36,7 @@ $block = {
     # The PID works only if the "TEAMCITY_PROCESS_FLOW_ID" env variable is not set.
     # Not sure why it is getting set in my TeamCity instance, but removing it in the script
     # explicitly to get the "PID" behavior
-    Remove-Item $env:TEAMCITY_PROCESS_FLOW_ID
+    Remove-Item env:TEAMCITY_PROCESS_FLOW_ID
     Write-Output "DEBUG: Should have removed the env variable"
     Write-Output "DEBUG: TEAMCITY_PROCESS_FLOW_ID='$env:TEAMCITY_PROCESS_FLOW_ID'"
     & .\packages\NUnit.ConsoleRunner.3.11.1\tools\nunit3-console.exe `
