@@ -13,14 +13,22 @@ if ($UseWindowsContainer) {
 & docker pull $image
 & docker run --name tcdemo-sql-001 -e "ACCEPT_EULA=Y" -e "sa_password=$saPassword" -p 1444:1433 -d $image
 
-Start-Sleep -Seconds 10 # Let the SQL Server start...
-
-& docker exec tcdemo-sql-001 $sqlcmd `
-    -S localhost -U sa -P "$saPassword" `
-    -Q "CREATE LOGIN [testuser] WITH PASSWORD=N'testpassword', DEFAULT_DATABASE=[master], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF"
-& docker exec tcdemo-sql-001 $sqlcmd `
-    -S localhost -U sa -P "$saPassword" `
-    -Q "ALTER SERVER ROLE [sysadmin] ADD MEMBER [testuser]"
+for ($i = 0; $i -lt 20; $i++) {
+    & docker exec tcdemo-sql-001 $sqlcmd `
+        -S localhost -U sa -P "$saPassword" `
+        -Q "CREATE LOGIN [testuser] WITH PASSWORD=N'testpassword', DEFAULT_DATABASE=[master], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF"
+    & docker exec tcdemo-sql-001 $sqlcmd `
+        -S localhost -U sa -P "$saPassword" `
+        -Q "ALTER SERVER ROLE [sysadmin] ADD MEMBER [testuser]"
+    
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "testuser created!"
+        break
+    } else {
+        Write-Host "Failed to create testuser, probably SQL Server hasn't started yet. Will retry in 15 seconds. Attempt $i/20"
+        Start-Sleep -Seconds 15
+    }
+}
 
 if (-not (Test-Path .\output))
 {
