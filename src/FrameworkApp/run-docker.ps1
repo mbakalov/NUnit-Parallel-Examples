@@ -15,10 +15,10 @@ if ($UseWindowsContainer) {
 
 Start-Sleep -Seconds 10 # Let the SQL Server start...
 
-& docker exec -it tcdemo-sql-001 $sqlcmd `
+& docker exec tcdemo-sql-001 $sqlcmd `
     -S localhost -U sa -P "$saPassword" `
     -Q "CREATE LOGIN [testuser] WITH PASSWORD=N'testpassword', DEFAULT_DATABASE=[master], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF"
-& docker exec -it tcdemo-sql-001 $sqlcmd `
+& docker exec tcdemo-sql-001 $sqlcmd `
     -S localhost -U sa -P "$saPassword" `
     -Q "ALTER SERVER ROLE [sysadmin] ADD MEMBER [testuser]"
 
